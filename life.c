@@ -167,54 +167,14 @@ int main(){
     automata *base;
     generateAutomata(&base);
     initialize(tabletop, inicial, base);
-    /**/
-    #ifdef debug
-        printf("%p\n",base);
-        printTabletop(tabletop[0]);
-        printf("\n");
-        printTabletop(tabletop[0]);
-        automata *test=base;
-        printf("%p %p %d\n", tabletop, base, state);
-        printf("\n\n\n\n%p    name %d\n",test, base->name);
-    #endif
-    /**/
     char state=1;
     char value;
     printf("\e[1;1H\e[2J\n\n\n\n\n");
     printTabletop(tabletop[state]);
-    #ifdef time
-    while(1){    
-        sleep(1);
-    #else
     while((value=fgetc(stdin))!='q'){
-    #endif
-        /**/
-        #ifdef debugtest
-        if(value!='\n'){
-            printf("index of matrix %d\n", value-'0');
-            action(&test, value-'0');
-            
-            printf("actual node %d\n",test->name);
-        }
-        /**/
-        #endif
-        #ifndef debugtest
-            #ifdef debug
-                printf("main %d\n", state);
-            #endif
-            /**/
-            life(tabletop, base, state);
-            printf("\e[1;1H\e[2J\n\n\n\n\n");
-            printTabletop(tabletop[state]);
-            /**/
-        #endif
-        /**/
-        #ifdef printhelp
-            printf("help\n");
-            printTabletop(tabletop[state^1]);
-            printf("\n");
-        #endif
-        /**/
+        life(tabletop, base, state);
+        printf("\e[1;1H\e[2J\n\n\n\n\n");
+        printTabletop(tabletop[state]);
         state^=1;
     }
     printf("hola %ld\n",sizeof(automata));
