@@ -4,7 +4,6 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -35,7 +34,6 @@ void doRenderMatrix(SDL_Renderer *renderer, automata *tabletop[TAM][TAM]);
 int handleEventsMenu(SDL_Window *window){
     SDL_Event event;
     char done = 0;
-    printf("hola");
     while(SDL_PollEvent(&event)){
         switch(event.type){
             case SDL_WINDOWEVENT_CLOSE:{
@@ -113,7 +111,7 @@ int main(int argc, char* argv[]) {
     SDL_Window *window;
     SDL_Renderer *renderer;
     SDL_Init(SDL_INIT_VIDEO);
-    window=SDL_CreateWindow("BattleTank",
+    window=SDL_CreateWindow("maestra ponganos 10 :D",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
                             SCREENX,
@@ -157,7 +155,7 @@ int main(int argc, char* argv[]) {
                 if(done<0){
                     break;
                 }
-                SDL_Delay(DELAY);
+                SDL_Delay(2*DELAY);
             }
             done=handleEventsGame(window);
             if(contador==6){
