@@ -1,7 +1,6 @@
 #include <SDL.h>
 #include <string.h>
 #include <stdlib.h>
-#include <SDL_image.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdbool.h>
@@ -21,7 +20,7 @@ typedef struct node{
     bool final;
 }automata;
 
-void readFile(char startcase[TAM][TAM]);
+void readFile(char startcase[TAM][TAM], char arg[]);
 bool generateAutomata(automata **value);
 void action(automata **value, char element);
 void debug(automata *tabletop[TAM][TAM]);
@@ -37,7 +36,6 @@ int handleEventsMenu(SDL_Window *window){
     while(SDL_PollEvent(&event)){
         switch(event.type){
             case SDL_WINDOWEVENT_CLOSE:{
-                printf("hola\n");
                 if(window){
                     SDL_DestroyWindow(window);
                     window=NULL;
@@ -55,7 +53,6 @@ int handleEventsMenu(SDL_Window *window){
                 break;
             }
             case SDL_QUIT:
-                printf("hola\n");
                 done=-1;
                 break;
         }
@@ -73,7 +70,6 @@ int handleEventsGame(SDL_Window *window){
     while(SDL_PollEvent(&event)){
         switch(event.type){
             case SDL_WINDOWEVENT_CLOSE:{
-                printf("hola\n");
                 if(window){
                     SDL_DestroyWindow(window);
                     window=NULL;
@@ -86,13 +82,11 @@ int handleEventsGame(SDL_Window *window){
                 switch(event.key.keysym.sym){
                     case SDLK_ESCAPE:
                         done=-1;
-                        printf("hola");
                         break;
                 }
                 break;
             }
             case SDL_QUIT:
-                printf("hola\n");
                 done=-1;
                 break;
         }
@@ -120,24 +114,14 @@ int main(int argc, char* argv[]) {
     );
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_SetRenderDrawColor(renderer, 0x1a, 0x1a, 0x1a, 100);
     
     char inicial[TAM][TAM]={};
-    inicial[1][1]=1;
-    inicial[2][2]=1;
-    inicial[3][2]=1;
-    inicial[3][1]=1;
-    inicial[3][0]=1;
+    readFile(inicial, argv[1]);
     automata *tabletop[2][TAM][TAM];
     automata *base;
     generateAutomata(&base);
     initialize(tabletop, inicial, base);
-    
-    for(int a=0; a<TAM; a++){
-        for(int b=0; b<TAM; b++){
-            printf("%d ", tabletop[0][a][b]!=base);
-        }
-        printf("\n");
-    }
     
     char state=1;
     char value;
@@ -192,17 +176,27 @@ void doRenderMatrix(SDL_Renderer *renderer, automata *tabletop[TAM][TAM]){
             lDeltaX=deltaX+iterX*CASILLA;
             lDeltaY=deltaY+iterY*CASILLA;
             if(tabletop[iterY][iterX]->final){
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0xff, 100);
+                SDL_SetRenderDrawColor(renderer, 0x9f, 0x9f, 0xcf, 100);
                 guide=(SDL_Rect){.x=lDeltaX, .y=lDeltaY, .w=CASILLA, .h=CASILLA};
                 SDL_RenderFillRect(renderer, &guide);
             }else{
-                SDL_SetRenderDrawColor(renderer, 0, 0xff, 0, 100);
+                SDL_SetRenderDrawColor(renderer, 0x41, 0x42, 0x42, 100);
                 guide=(SDL_Rect){.x=lDeltaX, .y=lDeltaY, .w=CASILLA, .h=CASILLA};
                 SDL_RenderFillRect(renderer, &guide);
             }
         }
     }
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+    for(int iterY=0; iterY<TAM; iterY++){
+        for(int iterX=0; iterX<TAM; iterX++){
+            lDeltaX=deltaX+iterX*CASILLA;
+            lDeltaY=deltaY+iterY*CASILLA;
+            guide=(SDL_Rect){.x=lDeltaX, .y=lDeltaY, .w=CASILLA, .h=CASILLA};
+            SDL_SetRenderDrawColor(renderer, 0x1a, 0x1a, 0x1a, 100);
+            SDL_RenderDrawRect(renderer, &guide);
+            
+        }
+    }
+    SDL_SetRenderDrawColor(renderer, 0x1a, 0x1a, 0x1a, 100);
 }
 
 bool generateAutomata(automata **value){
@@ -315,4 +309,17 @@ int printTabletop(automata *tabletop[TAM][TAM]){
     return 0;
 }
 
+void readFile(char startcase[TAM][TAM], char arg[]){
+    FILE *doc;
+    char location[40]={};
+    snprintf(location, 39, ".\\tests\\%s\0",arg);
+    doc=fopen(location, "r");
+    for(int iterX=0; iterX<TAM; iterX++){
+        for(int iterY=0; iterY<TAM; iterY++){
+            startcase[iterX][iterY]=fgetc(doc)-'0';
+        }
+        fgetc(doc);
+    }
+    fclose(doc);
+}
 
