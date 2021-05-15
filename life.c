@@ -161,19 +161,16 @@ int printTabletop(automata *tabletop[TAM][TAM]){
 
 
 int main(){
-    char inicial[TAM][TAM];
-    readFile(inicial);
+    char inicial[TAM][TAM]={};
     automata *tabletop[2][TAM][TAM];
     automata *base;
     generateAutomata(&base);
     initialize(tabletop, inicial, base);
     char state=1;
     char value;
-    printf("\e[1;1H\e[2J\n\n\n\n\n");
     printTabletop(tabletop[state]);
     while((value=fgetc(stdin))!='q'){
         life(tabletop, base, state);
-        printf("\e[1;1H\e[2J\n\n\n\n\n");
         printTabletop(tabletop[state]);
         state^=1;
     }
